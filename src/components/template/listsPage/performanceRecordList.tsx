@@ -1,12 +1,18 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
+import { Observer } from "rosma";
 import { performance } from "../../../data/performance";
 import { PerformanceRecordGetEntity } from "../../../types/PerformanceRecordGet";
 import { toLocalTimeString } from "../../../utils/toLocalDate";
 import BasicTable from "../../module/table";
 
 type PerformanceRecordListProps = {};
-
+export const ObserverState = new Observer({
+  selectAllCheck: [],
+  searchValue: "",
+  localSearchValue: "",
+  sort: "",
+});
 function PerformanceRecordList({}: PerformanceRecordListProps) {
   //** Table */
   const columns = useMemo<ColumnDef<PerformanceRecordGetEntity, any>[]>(
@@ -67,6 +73,7 @@ function PerformanceRecordList({}: PerformanceRecordListProps) {
         column={columns}
         defaultData={performance}
         selectType="multiple"
+        ObserverState={ObserverState}
       />
     </div>
   );

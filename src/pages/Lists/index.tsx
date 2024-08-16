@@ -12,7 +12,7 @@ function Lists({}: ListsPageProps) {
 
   return (
     <div
-      className="bg-[#F8FAFC] font-serif h-screen flex flex-col items-center overflow-hidden p-8"
+      className="bg-[#F8FAFC] h-screen flex flex-col items-center overflow-hidden p-8"
       dir="rtl"
     >
       <div className="flex font-medium text-sm w-full">

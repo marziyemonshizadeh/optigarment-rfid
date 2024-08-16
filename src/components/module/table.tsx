@@ -13,15 +13,22 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, ReactNode, useState } from "react";
 import { Observer, useObserver } from "rosma";
 import { useDebouncedCallback } from "use-debounce";
 
-interface Props<T> {
-  column: ColumnDef<T, any>[];
+interface Props {
+  column: ColumnDef<any>[];
   defaultData: any;
   ObserverState?: Observer;
-  selectType: "single" | "multiple" | "none";
+  selectType?: "multiple";
+  actions?: {
+    editOpt?: ReactNode;
+    outputOpt?: string;
+    printOpt?: () => void | undefined;
+    deleteOpt?: () => void | undefined;
+    cuttingDeskOpt?: () => void | undefined;
+  };
 }
 // search
 export const tableObserver = new Observer({
@@ -33,6 +40,9 @@ export const tableObserver = new Observer({
 export interface TableObserver {
   searchValue: string;
   localSearchValue: string;
+  selectedRows: any[];
+  selectAllCheck: any[];
+  selectForEdit: any;
   sort: string;
 }
 export default function BasicTable<T>({
@@ -40,7 +50,8 @@ export default function BasicTable<T>({
   defaultData,
   ObserverState,
   selectType,
-}: Props<T>) {
+  actions,
+}: Props) {
   // hooks
   const [data, _setData] = useState<any>(() => [...defaultData]);
 
@@ -49,8 +60,16 @@ export default function BasicTable<T>({
     columns: column,
     getCoreRowModel: getCoreRowModel(),
   });
-  const { searchValue, localSearchValue, sort, setSort } =
-    useObserver<TableObserver>(ObserverState || tableObserver);
+  const {
+    searchValue,
+    localSearchValue,
+    selectAllCheck,
+    setSelectAllCheck,
+    sort,
+    setSort,
+    selectForEdit,
+    setSelectForEdit,
+  } = useObserver<TableObserver>(ObserverState || tableObserver);
 
   const { setSearchValue, setLocalSearchValue } = useObserver<TableObserver>(
     ObserverState || tableObserver
@@ -72,24 +91,25 @@ export default function BasicTable<T>({
   const handleFiltering = () => {
     console.log("filtering");
   };
-  //   const handleSelectRow = (row: any) => {
-  //     if (selectAllCheck.some((rows) => rows.id === row.id)) {
-  //       setSelectAllCheck(selectAllCheck.filter((rows) => rows.id !== row.id));
-  //     } else {
-  //       if (selectType === "multiple") {
-  //         setSelectAllCheck([...selectAllCheck, row]);
-  //         actions?.editOpt && setSelectForEdit(row);
-  //       } else {
-  //         actions?.editOpt && setSelectForEdit(row);
-  //         setSelectAllCheck([row]);
-  //       }
-  //     }
-  //   };
-  //   const handleCheckSelected = (row: any) => {
-  //     if (selectAllCheck.some((rows) => rows.id === row.id)) {
-  //       return true;
-  //     }
-  //   };
+  const handleSelectRow = (row: any) => {
+    if (selectAllCheck.some((rows) => rows.id === row.id)) {
+      setSelectAllCheck(selectAllCheck.filter((rows) => rows.id !== row.id));
+    } else {
+      if (selectType === "multiple") {
+        setSelectAllCheck([...selectAllCheck, row]);
+        actions?.editOpt && setSelectForEdit(row);
+      } else {
+        actions?.editOpt && setSelectForEdit(row);
+        setSelectAllCheck([row]);
+      }
+    }
+  };
+  const handleCheckSelected = (row: any) => {
+    if (selectAllCheck.some((rows) => rows.id === row.id)) {
+      return true;
+    }
+  };
+
   return (
     <>
       <header className="flex justify-between bg-white p-4">
@@ -274,11 +294,16 @@ export default function BasicTable<T>({
           <TableBody>
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
+                {row.getVisibleCells().map((cell, index) => (
                   <TableCell
                     key={cell.id}
                     component="th"
                     scope="row"
+                    onClick={() =>
+                      index === 0 &&
+                      selectType === "multiple" &&
+                      handleSelectRow(row.original)
+                    }
                     sx={{
                       "&:first-child ": {
                         borderLeft: 1,
