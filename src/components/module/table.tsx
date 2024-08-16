@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import {
   ColumnDef,
+  Row,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -59,7 +60,11 @@ export default function BasicTable<T>({
     data,
     columns: column,
     getCoreRowModel: getCoreRowModel(),
+    enableRowSelection: true,
+    manualSorting: true,
   });
+  const { rows } = table.getRowModel();
+
   const {
     searchValue,
     localSearchValue,
@@ -91,21 +96,24 @@ export default function BasicTable<T>({
   const handleFiltering = () => {
     console.log("filtering");
   };
-  const handleSelectRow = (row: any) => {
-    if (selectAllCheck.some((rows) => rows.id === row.id)) {
-      setSelectAllCheck(selectAllCheck.filter((rows) => rows.id !== row.id));
+  const handleSelectAll = () => {
+    if (selectAllCheck.length) {
+      setSelectAllCheck([]);
     } else {
-      if (selectType === "multiple") {
-        setSelectAllCheck([...selectAllCheck, row]);
-        actions?.editOpt && setSelectForEdit(row);
-      } else {
-        actions?.editOpt && setSelectForEdit(row);
-        setSelectAllCheck([row]);
-      }
+      setSelectAllCheck(rows.map((row: Row<any>) => row.original));
+    }
+  };
+  const handleSelectRow = (row: any) => {
+    if (selectType === "multiple") {
+      setSelectAllCheck([...selectAllCheck, row]);
+      actions?.editOpt && setSelectForEdit(row);
+    } else {
+      actions?.editOpt && setSelectForEdit(row);
+      setSelectAllCheck([row]);
     }
   };
   const handleCheckSelected = (row: any) => {
-    if (selectAllCheck.some((rows) => rows.id === row.id)) {
+    if (selectAllCheck?.some((rows) => rows.id === row.id)) {
       return true;
     }
   };
@@ -257,6 +265,7 @@ export default function BasicTable<T>({
         component={Paper}
       >
         <Table
+          stickyHeader
           sx={{ maxWidth: "100%", boxShadow: "none" }}
           aria-label="simple table"
         >
@@ -279,6 +288,10 @@ export default function BasicTable<T>({
                       fontSize: "14px",
                       padding: "10px",
                     }}
+                    // onClick={() =>
+                    //     (header.column.columnDef as any).sort &&
+                    //     handleSort((header.column.columnDef as any).sort)
+                    //   }
                   >
                     {header.isPlaceholder
                       ? null
@@ -293,7 +306,14 @@ export default function BasicTable<T>({
           </TableHead>
           <TableBody>
             {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
+              <TableRow
+                key={row.id}
+                sx={{
+                  "&:hover ": {
+                    bgcolor: "#F1F5F9",
+                  },
+                }}
+              >
                 {row.getVisibleCells().map((cell, index) => (
                   <TableCell
                     key={cell.id}
@@ -305,10 +325,13 @@ export default function BasicTable<T>({
                       handleSelectRow(row.original)
                     }
                     sx={{
-                      "&:first-child ": {
-                        borderLeft: 1,
-                        borderColor: "#E2E8F0",
-                      },
+                      borderLeft: 1,
+                      borderColor: () =>
+                        handleCheckSelected(row.original)
+                          ? "#E2E8F0"
+                          : "#E2E8F0",
+                      bgcolor: () =>
+                        handleCheckSelected(row.original) ? "#F1F5F9" : "white",
                       maxWidth: cell.column.getSize(),
                       textAlign: "right",
                       padding: "8px",
@@ -324,7 +347,10 @@ export default function BasicTable<T>({
         </Table>
       </TableContainer>
       <footer className="bg-[#F5F5F5] h-[48px] w-full overflow-hidden flex justify-end items-center gap-4 text-sm sticky px-2">
-        <div className="flex text-[#94A3B8]">
+        <button
+          //   disabled={selectAllCheck.length !== 1}
+          className="flex text-[#94A3B8]"
+        >
           <span>ویرایش</span>
           <svg
             width="24"
@@ -350,7 +376,7 @@ export default function BasicTable<T>({
               stroke-linejoin="round"
             />
           </svg>
-        </div>
+        </button>
         {/* #94A3B8 */}
         <div className="flex text-[#2563EB]">
           <span>خروجی</span>

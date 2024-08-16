@@ -14,6 +14,10 @@ export const ObserverState = new Observer({
   sort: "",
 });
 function PerformanceRecordList({}: PerformanceRecordListProps) {
+  //** Actions */
+  function handlePrint() {
+    // refetch();
+  }
   //** Table */
   const columns = useMemo<ColumnDef<PerformanceRecordGetEntity, any>[]>(
     () => [
@@ -74,6 +78,11 @@ function PerformanceRecordList({}: PerformanceRecordListProps) {
         defaultData={performance}
         selectType="multiple"
         ObserverState={ObserverState}
+        actions={{
+          editOpt: <div>edit</div>,
+          printOpt: handlePrint,
+          outputOpt: "PLANNING.getProjectDownload",
+        }}
       />
     </div>
   );
