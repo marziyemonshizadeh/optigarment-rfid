@@ -1,3 +1,70 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100vh;
+  background-color: #f8f9fe;
+  width: 100%;
+}
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+@font-face {
+  font-family: poppins;
+  src: url("../public/fonts/IRANSansX-Black.woff");
+}
+/* @font-face {
+  font-family: "Oswald";
+  src: url("../public/fonts/IRANSansX-Bold.woff");
+} */
+
+@font-face {
+  font-family: iranSans;
+  src: url("../public/fonts/IRANSansX-Black.woff");
+  src: url("../public/fonts/IRANSansX-Bold.woff"),
+    url("../public/fonts/IRANSansX-DemiBold.woff"),
+    url("../public/fonts/IRANSansX-ExtraBlack.woff"),
+    url("../public/fonts/IRANSansX-ExtraBold.woff"),
+    url("../public/fonts/IRANSansX-Heavy.woff"),
+    url("../public/fonts/IRANSansX-Light.woff"),
+    url("../public/fonts/IRANSansX-Medium.woff"),
+    url("../public/fonts/IRANSansX-Regular.woff"),
+    url("../public/fonts/IRANSansX-Thin.woff"),
+    url("../public/fonts/IRANSansX-UltraLight.woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  /* background:blue; */
+  width: 5px;
+  /* margin-top: 100px; */
+  /* margin-bottom: 100px; */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  height: 20px;
+  max-height: 20px;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:focus,
+select:focus {
+  -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+  -webkit-text-fill-color: black !important;
+}
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input:active {
+  border: "none";
+}
