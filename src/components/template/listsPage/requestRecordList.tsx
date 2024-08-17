@@ -4,10 +4,21 @@ import { Link } from "react-router-dom";
 import { request } from "../../../data/request";
 import { RequestRecordGetEntity } from "../../../types/RequestRecordGet";
 import BasicTable from "../../module/table";
+import { Observer } from "rosma";
 
 type RequestRecordListProps = {};
-
+export const ObserverState = new Observer({
+  selectAllCheck: [],
+  searchValue: "",
+  localSearchValue: "",
+  sort: "",
+});
+// eslint-disable-next-line no-empty-pattern
 function RequestRecordList({}: RequestRecordListProps) {
+  //** Actions */
+  function handlePrint() {
+    // refetch();
+  }
   //** Table */
   const columns = useMemo<ColumnDef<RequestRecordGetEntity, any>[]>(
     () => [
@@ -67,6 +78,12 @@ function RequestRecordList({}: RequestRecordListProps) {
         column={columns}
         defaultData={request}
         selectType="multiple"
+        ObserverState={ObserverState}
+        actions={{
+          editOpt: <div>edit</div>,
+          printOpt: handlePrint,
+          outputOpt: "PLANNING.getProjectDownload",
+        }}
       />
     </div>
   );

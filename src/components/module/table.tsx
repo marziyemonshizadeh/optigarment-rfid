@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import {
   ColumnDef,
-  Row,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -46,7 +45,7 @@ export interface TableObserver {
   selectForEdit: any;
   sort: string;
 }
-export default function BasicTable<T>({
+export default function BasicTable({
   column,
   defaultData,
   ObserverState,
@@ -54,7 +53,7 @@ export default function BasicTable<T>({
   actions,
 }: Props) {
   // hooks
-  const [data, _setData] = useState<any>(() => [...defaultData]);
+  const [data] = useState<any>(() => [...defaultData]);
 
   const table = useReactTable({
     data,
@@ -65,18 +64,10 @@ export default function BasicTable<T>({
   });
   const { rows } = table.getRowModel();
 
-  const {
-    searchValue,
-    localSearchValue,
-    selectAllCheck,
-    setSelectAllCheck,
-    sort,
-    setSort,
-    selectForEdit,
-    setSelectForEdit,
-  } = useObserver<TableObserver>(ObserverState || tableObserver);
+  const { selectAllCheck, setSelectAllCheck, setSelectForEdit } =
+    useObserver<TableObserver>(ObserverState || tableObserver);
 
-  const { setSearchValue, setLocalSearchValue } = useObserver<TableObserver>(
+  const { setSearchValue } = useObserver<TableObserver>(
     ObserverState || tableObserver
   );
   const debounce = useDebouncedCallback((val) => {
@@ -96,13 +87,13 @@ export default function BasicTable<T>({
   const handleFiltering = () => {
     console.log("filtering");
   };
-  const handleSelectAll = () => {
-    if (selectAllCheck.length) {
-      setSelectAllCheck([]);
-    } else {
-      setSelectAllCheck(rows.map((row: Row<any>) => row.original));
-    }
-  };
+  // const handleSelectAll = () => {
+  //   if (selectAllCheck.length) {
+  //     setSelectAllCheck([]);
+  //   } else {
+  //     setSelectAllCheck(rows.map((row: Row<any>) => row.original));
+  //   }
+  // };
   const handleSelectRow = (row: any) => {
     if (selectType === "multiple") {
       setSelectAllCheck([...selectAllCheck, row]);
@@ -377,7 +368,6 @@ export default function BasicTable<T>({
             />
           </svg>
         </button>
-        {/* #94A3B8 */}
         <div className="flex text-[#2563EB]">
           <span>خروجی</span>
           <svg
