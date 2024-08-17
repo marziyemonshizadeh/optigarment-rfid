@@ -13,7 +13,6 @@ export const ObserverState = new Observer({
   localSearchValue: "",
   sort: "",
 });
-// eslint-disable-next-line no-empty-pattern
 function PerformanceRecordList({}: PerformanceRecordListProps) {
   //** Actions */
   function handlePrint() {

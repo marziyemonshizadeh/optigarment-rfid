@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import {
   ColumnDef,
+  Row,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -45,7 +46,7 @@ export interface TableObserver {
   selectForEdit: any;
   sort: string;
 }
-export default function BasicTable({
+export default function BasicTable<T>({
   column,
   defaultData,
   ObserverState,
@@ -53,7 +54,7 @@ export default function BasicTable({
   actions,
 }: Props) {
   // hooks
-  const [data] = useState<any>(() => [...defaultData]);
+  const [data, _setData] = useState<any>(() => [...defaultData]);
 
   const table = useReactTable({
     data,
@@ -64,10 +65,18 @@ export default function BasicTable({
   });
   const { rows } = table.getRowModel();
 
-  const { selectAllCheck, setSelectAllCheck, setSelectForEdit } =
-    useObserver<TableObserver>(ObserverState || tableObserver);
+  const {
+    searchValue,
+    localSearchValue,
+    selectAllCheck,
+    setSelectAllCheck,
+    sort,
+    setSort,
+    selectForEdit,
+    setSelectForEdit,
+  } = useObserver<TableObserver>(ObserverState || tableObserver);
 
-  const { setSearchValue } = useObserver<TableObserver>(
+  const { setSearchValue, setLocalSearchValue } = useObserver<TableObserver>(
     ObserverState || tableObserver
   );
   const debounce = useDebouncedCallback((val) => {
@@ -87,13 +96,13 @@ export default function BasicTable({
   const handleFiltering = () => {
     console.log("filtering");
   };
-  // const handleSelectAll = () => {
-  //   if (selectAllCheck.length) {
-  //     setSelectAllCheck([]);
-  //   } else {
-  //     setSelectAllCheck(rows.map((row: Row<any>) => row.original));
-  //   }
-  // };
+  const handleSelectAll = () => {
+    if (selectAllCheck.length) {
+      setSelectAllCheck([]);
+    } else {
+      setSelectAllCheck(rows.map((row: Row<any>) => row.original));
+    }
+  };
   const handleSelectRow = (row: any) => {
     if (selectType === "multiple") {
       setSelectAllCheck([...selectAllCheck, row]);
@@ -368,6 +377,7 @@ export default function BasicTable({
             />
           </svg>
         </button>
+        {/* #94A3B8 */}
         <div className="flex text-[#2563EB]">
           <span>خروجی</span>
           <svg
